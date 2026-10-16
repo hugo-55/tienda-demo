@@ -12,6 +12,8 @@ export default function Automatizacion() {
   const [product, setProduct] = useState('Yerba mate 1 kg');
   const [qty, setQty] = useState(2);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [mode, setMode] = useState(null);
   const [log, setLog] = useState([]);
 
   function pushLog(msgs) {
@@ -19,21 +21,48 @@ export default function Automatizacion() {
     setLog((l) => [...l, ...msgs.map((m) => `${t} — ${m}`)]);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!name.trim()) return alert('Escribe tu nombre para probar la demo');
-    setSent(true);
+    setSending(true);
+    setSent(false);
     setLog([]);
-    pushLog([
-      `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
-      '💾 Guardado en Google Sheets → hoja "Pedidos", fila nueva con fecha y total',
-      '🔔 WhatsApp automático al dueño: "Nuevo pedido de ' + name + ', responder en menos de 15 min"',
-      '✅ Cliente ve confirmación en pantalla (lo que ves abajo)',
-    ]);
+    pushLog(['⏳ Enviando pedido al sistema...']);
+    try {
+      const r = await fetch('/api/pedido', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, product, qty }),
+      });
+      const data = await r.json();
+      if (!data.ok && !data.row) throw new Error(data.error || 'Error desconocido');
+      setSent(true);
+      setMode(data.mode || 'demo');
+      if (data.mode === 'live') {
+        pushLog([
+          `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
+          '💾 Guardado REAL en tu Google Sheet → hoja "Pedidos"',
+          `🔔 WhatsApp automático al dueño: "Nuevo pedido de ${name}"`,
+          '✅ Pedido registrado en vivo. Revisa tu planilla.',
+        ]);
+      } else {
+        pushLog([
+          `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
+          '💾 [MODO DEMO] Se guardaría en Google Sheets → hoja "Pedidos"',
+          `🔔 [MODO DEMO] WhatsApp automático al dueño: "Nuevo pedido de ${name}"`,
+          'ℹ️ Conecta tu planilla (5 min, ver guía abajo) para guardar de verdad.',
+        ]);
+      }
+    } catch (err) {
+      pushLog([`❌ No se pudo registrar: ${err.message}. Intenta de nuevo.`]);
+    } finally {
+      setSending(false);
+    }
   }
 
   function reset() {
     setSent(false);
+    setMode(null);
     setLog([]);
   }
 
@@ -78,9 +107,11 @@ export default function Automatizacion() {
             </select>
             <label>3. Cantidad</label>
             <input type="number" min="1" max="99" value={qty} onChange={(e) => setQty(Number(e.target.value))} />
-            <button className="btn" type="submit">Enviar pedido (simulado)</button>{' '}
+            <button className="btn" type="submit" disabled={sending}>{sending ? 'Enviando...' : 'Enviar pedido'}</button>{' '}
             <button className="btn btn-outline" type="button" onClick={reset}>Limpiar</button>
           </form>
+          {mode === 'live' && <p><span className="badge">🟢 EN VIVO — guardado en tu planilla</span></p>}
+          {mode && mode !== 'live' && <p><span className="badge badge-warn">🟡 MODO DEMO — conecta tu planilla abajo</span></p>}
           {sent && (
             <p><strong>✅ ¡Pedido registrado!</strong> Abajo ves exactamente qué haría el sistema real. Y si fuera de verdad, ya tendrías el aviso en tu celular.</p>
           )}
@@ -101,6 +132,11 @@ export default function Automatizacion() {
             <li>✅ Aviso automático a tu WhatsApp/correo</li>
             <li>✅ Video de 5 min: cómo usarlo y modificar precios</li>
           </ul>
+        </div>
+
+        <div className="card">
+          <h3>Activar guardado real (5 min, una vez)</h3>
+          <p className="muted">Hoy está en modo demo. Para guardar pedidos de verdad en tu Google Sheet sigue la guía <strong>SHEETS-SETUP.md</strong> del repo y pega la URL en <strong>lib/site.js → SHEET_ENDPOINT</strong>. Sin cambiar nada más, el cartel cambia a 🟢 EN VIVO.</p>
         </div>
 
         <Pricing />
