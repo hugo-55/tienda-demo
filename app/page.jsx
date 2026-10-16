@@ -1,6 +1,7 @@
 import WhatsAppButton from '../components/WhatsAppButton';
 import LeadCTA from '../components/LeadCTA';
 import Pricing from '../components/Pricing';
+import { Logo, default as ProductArt } from '../components/Brand';
 import { waLink, PAGESPEED_URL } from '../lib/site';
 
 const PRODUCTS = [
@@ -17,7 +18,7 @@ export default function Home() {
     <div>
       <div className="topbar">
         <div className="topbar-inner">
-          <span className="logo">🏪 Almacén Demo</span>
+          <Logo />
           <nav className="nav">
             <a href="/">Tienda</a>
             <a href="/automatizacion">Automatización</a>
@@ -72,6 +73,7 @@ export default function Home() {
         <div className="grid">
           {PRODUCTS.map((p) => (
             <div className="card" key={p.id}>
+              <ProductArt id={p.id} />
               <strong>{p.name}</strong>
               <p className="muted">{p.desc}</p>
               <p className="price">{fmt(p.price)}</p>
@@ -92,6 +94,16 @@ export default function Home() {
           <div className="step"><span className="step-num">2</span><br /><strong>Mensaje automático</strong><p className="muted">El pedido llega a tu WhatsApp ya redactado: producto + precio.</p></div>
           <div className="step"><span className="step-num">3</span><br /><strong>Confirmas y vendes</strong><p className="muted">Respondes, coordinas entrega y listo. Sin planillas a mano.</p></div>
         </div>
+
+        <h2 className="section-title">Caso ilustrativo: Almacén Los Andes</h2>
+        <p className="muted">Ejemplo basado en esta demo — muestra el formato de resultados que entrego medidos con cada trabajo.</p>
+        <div className="grid">
+          <div className="stat"><b>8,2s → 0,7s</b><span>tiempo de carga</span></div>
+          <div className="stat"><b>45 → 98</b><span>Pagespeed móvil</span></div>
+          <div className="stat"><b>+30%</b><span>pedidos por WhatsApp*</span></div>
+          <div className="stat"><b>0</b><span>pedidos perdidos por form roto</span></div>
+        </div>
+        <p className="muted">*Proyección típica al eliminar la fricción del pedido. Cada proyecto incluye su propia medición antes/después.</p>
 
         <div className="card">
           <h3>¿Qué incluye una mejora web como esta?</h3>
