@@ -21,6 +21,6 @@ npm run dev
 2. Mostrar esta demo: velocidad, WhatsApp, pedido (30s)
 3. "Para tu negocio haría X, entrega en N días + garantía" (20s)
 
-## URLs vivas
-- Prod: PONER-AQUI
-- Videos: PONER-AQUI
+## URLs y repo
+- Repo: https://github.com/hugo-55/tienda-demo
+- Prod: PENDIENTE (pegar URL vercel.app tras deploy)
