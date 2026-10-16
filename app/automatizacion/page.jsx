@@ -1,6 +1,9 @@
 'use client';
 import { useState } from 'react';
 import WhatsAppButton from '../../components/WhatsAppButton';
+import LeadCTA from '../../components/LeadCTA';
+import Pricing from '../../components/Pricing';
+import { waLink } from '../../lib/site';
 
 const STEPS_DONE = ['📥 Pedido recibido', '💾 Guardado en planilla', '🔔 Aviso al dueño'];
 
@@ -35,7 +38,7 @@ export default function Automatizacion() {
   }
 
   const waText = `Hola, soy ${name || '...'}. Quiero pedir: ${qty} x ${product}`;
-  const waHref = `https://wa.me/56963127779?text=${encodeURIComponent(waText)}`;
+  const waHref = waLink(waText);
 
   return (
     <div>
@@ -99,6 +102,9 @@ export default function Automatizacion() {
             <li>✅ Video de 5 min: cómo usarlo y modificar precios</li>
           </ul>
         </div>
+
+        <Pricing />
+        <LeadCTA context="demo de automatización" />
 
         <WhatsAppButton />
       </div>

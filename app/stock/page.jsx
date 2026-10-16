@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import WhatsAppButton from '../../components/WhatsAppButton';
+import LeadCTA from '../../components/LeadCTA';
+import Pricing from '../../components/Pricing';
 
 const KEY = 'demo-stock-v1';
 const SEED = [
@@ -111,6 +113,9 @@ export default function Stock() {
           </form>
           <p className="muted">Todo se guarda en este navegador (demo). En el trabajo real queda en la nube con usuarios y respaldo.</p>
         </div>
+
+        <Pricing />
+        <LeadCTA context="demo de stock" />
 
         <WhatsAppButton />
       </div>

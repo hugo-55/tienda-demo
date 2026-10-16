@@ -1,4 +1,7 @@
 import WhatsAppButton from '../components/WhatsAppButton';
+import LeadCTA from '../components/LeadCTA';
+import Pricing from '../components/Pricing';
+import { waLink, PAGESPEED_URL } from '../lib/site';
 
 const PRODUCTS = [
   { id: 'yerba-1kg', name: 'Yerba mate 1 kg', price: 4990, desc: 'El clásico de todos los días.' },
@@ -36,7 +39,7 @@ export default function Home() {
           </p>
           <div className="hero-cta">
             <a className="btn btn-white" href="#catalogo">Ver catálogo ↓</a>
-            <a className="btn btn-green" href="https://wa.me/56963127779?text=Hola%2C%20quiero%20cotizar%20la%20mejora%20de%20mi%20web" target="_blank">Cotizar mi web</a>
+            <a className="btn btn-green" href={waLink('Hola, quiero cotizar la mejora de mi web')} target="_blank">Cotizar mi web</a>
           </div>
         </div>
 
@@ -60,6 +63,7 @@ export default function Home() {
               <li>Cada producto arma su pedido solo</li>
               <li>Dueño recibe el pedido en segundos</li>
             </ul>
+            <p><a href={PAGESPEED_URL} target="_blank">🔍 Verificar velocidad en vivo con Google →</a></p>
           </div>
         </div>
 
@@ -73,7 +77,7 @@ export default function Home() {
               <p className="price">{fmt(p.price)}</p>
               <a
                 className="btn btn-green"
-                href={`https://wa.me/56963127779?text=${encodeURIComponent(`Hola, quiero pedir: ${p.name} (${fmt(p.price)})`)}`}
+                href={waLink(`Hola, quiero pedir: ${p.name} (${fmt(p.price)})`)}
                 target="_blank"
               >
                 Pedir por WhatsApp
@@ -104,9 +108,11 @@ export default function Home() {
           </p>
         </div>
 
+        <Pricing />
+        <LeadCTA context="demo de tienda" />
+
         <div className="card faq">
-          <h3>Preguntas típicas</h3>
-          <details><summary>¿Necesito cambiar mi logo o mis fotos?</summary><p>No. Trabajo con lo que tienes y lo dejo más rápido y ordenado.</p></details>
+          <h3>Preguntas típicas</h3>          <details><summary>¿Necesito cambiar mi logo o mis fotos?</summary><p>No. Trabajo con lo que tienes y lo dejo más rápido y ordenado.</p></details>
           <details><summary>¿Cuánto demora?</summary><p>Una mejora como esta: 3 a 5 días + 7 días de garantía.</p></details>
           <details><summary>¿Funciona sin internet rápido?</summary><p>Sí, justamente: al ser liviana carga incluso con mala señal.</p></details>
         </div>
