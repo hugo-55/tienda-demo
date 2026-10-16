@@ -23,4 +23,5 @@ npm run dev
 
 ## URLs y repo
 - Repo: https://github.com/hugo-55/tienda-demo
-- Prod: PENDIENTE (pegar URL vercel.app tras deploy)
+- Prod: https://tienda-demo-tau.vercel.app/
+- Videos: PENDIENTE (pegar 3 Looms)
