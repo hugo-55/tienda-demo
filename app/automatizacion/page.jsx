@@ -37,22 +37,20 @@ export default function Automatizacion() {
       const data = await r.json();
       if (!data.ok && !data.row) throw new Error(data.error || 'Error desconocido');
       setSent(true);
-      setMode(data.mode || 'demo');
-      if (data.mode === 'live') {
-        pushLog([
-          `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
-          '💾 Guardado REAL en tu Google Sheet → hoja "Pedidos"',
-          `🔔 WhatsApp automático al dueño: "Nuevo pedido de ${name}"`,
-          '✅ Pedido registrado en vivo. Revisa tu planilla.',
-        ]);
-      } else {
-        pushLog([
-          `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
-          '💾 [MODO DEMO] Se guardaría en Google Sheets → hoja "Pedidos"',
-          `🔔 [MODO DEMO] WhatsApp automático al dueño: "Nuevo pedido de ${name}"`,
-          'ℹ️ Conecta tu planilla (5 min, ver guía abajo) para guardar de verdad.',
-        ]);
-      }
+      const live = data.sheetMode === 'live' && data.notifyMode === 'live';
+      setMode(live ? 'live' : data.sheetMode === 'live' || data.notifyMode === 'live' ? 'partial' : 'demo');
+      pushLog([
+        `📥 Pedido recibido: ${qty} x ${product} (cliente: ${name})`,
+        data.sheetMode === 'live'
+          ? '💾 Guardado REAL en tu Google Sheet → hoja "Pedidos"'
+          : '💾 [MODO DEMO] Se guardaría en Google Sheets → hoja "Pedidos"',
+        data.notifyMode === 'live'
+          ? `🔔 WhatsApp REAL enviado a tu celular: "Nuevo pedido de ${name}"`
+          : `🔔 [MODO DEMO] WhatsApp automático al dueño: "Nuevo pedido de ${name}"`,
+        live
+          ? '✅ Flujo completo en vivo. Revisa tu planilla y tu WhatsApp.'
+          : 'ℹ️ Activa planilla y avisos (guías abajo) para el flujo 100% real.',
+      ]);
     } catch (err) {
       pushLog([`❌ No se pudo registrar: ${err.message}. Intenta de nuevo.`]);
     } finally {
@@ -110,8 +108,9 @@ export default function Automatizacion() {
             <button className="btn" type="submit" disabled={sending}>{sending ? 'Enviando...' : 'Enviar pedido'}</button>{' '}
             <button className="btn btn-outline" type="button" onClick={reset}>Limpiar</button>
           </form>
-          {mode === 'live' && <p><span className="badge">🟢 EN VIVO — guardado en tu planilla</span></p>}
-          {mode && mode !== 'live' && <p><span className="badge badge-warn">🟡 MODO DEMO — conecta tu planilla abajo</span></p>}
+          {mode === 'live' && <p><span className="badge">🟢 EN VIVO — planilla + aviso reales</span></p>}
+          {mode === 'partial' && <p><span className="badge badge-warn">🟡 PARCIAL — una parte real, otra demo</span></p>}
+          {mode === 'demo' && <p><span className="badge badge-warn">🟡 MODO DEMO — activa planilla y avisos abajo</span></p>}
           {sent && (
             <p><strong>✅ ¡Pedido registrado!</strong> Abajo ves exactamente qué haría el sistema real. Y si fuera de verdad, ya tendrías el aviso en tu celular.</p>
           )}
@@ -135,8 +134,8 @@ export default function Automatizacion() {
         </div>
 
         <div className="card">
-          <h3>Activar guardado real (5 min, una vez)</h3>
-          <p className="muted">Hoy está en modo demo. Para guardar pedidos de verdad en tu Google Sheet sigue la guía <strong>SHEETS-SETUP.md</strong> del repo y pega la URL en <strong>lib/site.js → SHEET_ENDPOINT</strong>. Sin cambiar nada más, el cartel cambia a 🟢 EN VIVO.</p>
+          <h3>Activar flujo real (una vez)</h3>
+          <p className="muted">Hoy está en modo demo. <strong>Planilla:</strong> guía <strong>SHEETS-SETUP.md</strong> (5 min) → URL en <strong>lib/site.js → SHEET_ENDPOINT</strong>. <strong>Avisos WhatsApp:</strong> guía <strong>NOTIFY-SETUP.md</strong> (10 min) → URL en <strong>NOTIFY_ENDPOINT</strong>. Sin cambiar nada más, el cartel pasa a 🟢 EN VIVO.</p>
         </div>
 
         <Pricing />
